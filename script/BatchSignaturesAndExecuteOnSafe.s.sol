@@ -3,6 +3,7 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Script.sol";
 import "forge-std/console2.sol";
+import "safe/GnosisSafe.sol";
 
 contract BatchSignaturesAndExecuteOnSafe is Script {
 
@@ -17,7 +18,20 @@ contract BatchSignaturesAndExecuteOnSafe is Script {
             signatures = bytes.concat(signatures, vm.parseBytes(vm.readFile(string.concat(path, vm.toString(i), ".txt"))));
         }
 
+        /*
+        GnosisSafe safe = GnosisSafe(payable(vm.envAddress("SAFE")));
+        address to; // Multicall?
+        uint256 value; // Keep 0?
+        bytes memory data; // To fetch.
+        Enum.Operation operation; // Call or delegatecall?
+        uint256 safeTxGas; // To fetch.
+        uint256 baseGas; // To fetch.
+        uint256 gasPrice; // Gas price
+        address gasToken = address(0); // ETH
+        address payable refundReceiver = payable(address(0)); // tx.origin
+
         vm.broadcast();
-        // TODO: Execute the transaction on the Safe.
+        safe.execTransaction(to, value, data, operation, safeTxGas, baseGas, gasPrice, gasToken, refundReceiver, signatures);
+        */
     }
 }

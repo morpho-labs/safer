@@ -45,7 +45,7 @@ contract BatchSignaturesAndExecuteOnSafe is Script {
         txData.baseGas = 0;
         txData.gasPrice = 0;
         txData.gasToken = address(0); // ETH
-        txData.refundReceiver = payable(address(0)); // txData.origin
+        txData.refundReceiver = payable(address(0)); // tx.origin
 
         // Execute tx.
         vm.broadcast(vm.envAddress("SENDER"));

@@ -5,7 +5,7 @@
 1. Put the data to sign in `/signatures/data.txt`
 2. To sign the data with a Ledger, run:
 	```bash
-	cast wallet sign $(cat /signatures/data.txt) --ledger
+	cast wallet sign $(cat ./signatures/data.txt) --ledger
 	```
 	Keep the signed data or send it to the signer that will execute the transaction on the Safe.
 

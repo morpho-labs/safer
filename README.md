@@ -5,7 +5,7 @@
 1. Put the data to sign in `/signatures/data.txt`
 2. To sign the data with a Ledger, run:
 	```bash
-	cast wallet sign $(cat ./signatures/data.txt) --ledger > signatures/signatures.txt
+	cast wallet sign $(cat ./signatures/data.txt) --ledger >> signatures/signatures.txt
 	```
 	Keep the signed data or send it to the signer that will execute the transaction on the Safe.
 
@@ -16,6 +16,6 @@
 2. Each required signer must sign the data. Signatures must be written one per line in `/signature/signatures.txt`.
 3. To send the transaction to the Safe with a Ledger, run:
 	```bash
-	forge script script/BatchSignaturesAndExecuteOnSafe.s.sol --ledger --broadcast --rpc-url $RPC_URL
+	forge script script/ExecTransaction.s.sol --ledger --broadcast --rpc-url $RPC_URL
 	```
 4. Approve the transaction on your Ledger.

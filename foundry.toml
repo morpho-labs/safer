@@ -5,4 +5,8 @@ libs = ["lib"]
 fs_permissions = [{ access = "read-write", path = "./"}]
 ffi = true
 
+
+[rpc_endpoints]
+rpc = "https://eth.llamarpc.com" # change this to match the chain on which the Safe is deployed
+
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config

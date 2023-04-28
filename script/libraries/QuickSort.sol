@@ -23,9 +23,7 @@ function quickSortAddress(address[] memory arr, int256 left, int256 right) pure 
 }
 
 library QuickSort {
-    function sort(address[] memory data) internal pure returns (address[] memory) {
+    function sort(address[] memory data) internal pure {
         quickSortAddress(data, int256(0), int256(data.length - 1));
-
-        return data;
     }
 }

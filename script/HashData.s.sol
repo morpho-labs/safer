@@ -11,6 +11,6 @@ contract HashData is SafeTxDataBuilder {
 
         bytes32 dataHash = hashData(txData);
 
-        console2.logBytes32(dataHash);
+        vm.writeFile(HASH_DATA_FILE, vm.toString(dataHash));
     }
 }

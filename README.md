@@ -1,21 +1,23 @@
 # Safer
 
-## Tutorial: sign data
+## Getting Started
 
-1. Put the data to sign in `/signatures/data.txt`
-2. To sign the data with a Ledger, run:
-	```bash
-	cast wallet sign $(cat ./signatures/data.txt) --ledger >> signatures/signatures.txt
-	```
-	Keep the signed data or send it to the signer that will execute the transaction on the Safe.
+- Install [Foundry](https://github.com/foundry-rs/foundry).
+- Run `make` to initialize the repository.
+- Create a `.env` file from the template [`.env.example`](./.env.example) file.
 
-## Tutorial: batch signatures and execute transaction
+You can customize the RPC url used in [`foundry.tml`](./foundry.toml) under the `rpc_endpoint` section. This is useful if your Safe is not deployed on mainnet (which is the default chain used).
 
-1. Populate your `.env` file as described in `.env.example`.
-1. The data to sign should be put in `/signatures/data.txt`.
-2. Each required signer must sign the data. Signatures must be written one per line in `/signature/signatures.txt`.
-3. To send the transaction to the Safe with a Ledger, run:
-	```bash
-	forge script script/ExecTransaction.s.sol --ledger --broadcast --rpc-url $RPC_URL
-	```
-4. Approve the transaction on your Ledger.
+### Sign a Safe tx
+
+1. Put the transaction's raw data in `signatures/tx.json`
+	- Using the zero address in place of `gasToken` indicates that the tx will consume the chain's default gas token (ETH on mainnet)
+	- Using the zero address in place of `refundReceiver` indicates that the tx's refund receiver will be the address executing the tx
+2. Hash the transaction's raw data: `make hash`
+3. To sign the data with a Ledger, run: `make sign:ledger`
+4. Share the content of `signatures.txt` with the signer who will execute the transaction on the Safe.
+
+## Batch signatures and execute transaction
+
+1. Make at least `threshold` signatures are available in `/signatures/signatures.txt`, each one per line
+2. To execute the transaction on the Safe with a Ledger, run: `make exec:ledger`

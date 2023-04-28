@@ -13,7 +13,14 @@ hash:
 	forge script script/HashData.s.sol --rpc-url rpc
 
 sign\:%:
-	forge script script/ExecTransaction.s.sol --$* --broadcast --rpc-url rpc
+	cast wallet sign --$* $$(cat signatures/hashData.txt)
+
+exec\:%:
+	forge script script/ExecTransaction.s.sol --$* --broadcast --rpc-url rpc >> signatures/signatures.txt
+
+clean:
+	> signatures/hashData.txt
+	> signatures/signatures.txt
 
 
 .PHONY: contracts test coverage

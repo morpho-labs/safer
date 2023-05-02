@@ -53,7 +53,7 @@ contract ExecTransaction is SafeTxDataBuilder {
     function loadSignatures() internal view returns (bytes[] memory signatures) {
         bytes memory res = bytes(vm.readFile(SIGNATURES_FILE));
 
-        // If the file only contains a single signature, ffi converts it to bytes and can be used as is.
+        // If the file only contains a single signature, it's converted to bytes and can be used as is.
         if (res.length == 65) {
             signatures = new bytes[](1);
             signatures[0] = res;

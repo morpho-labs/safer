@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import {SignatureDecoder} from "safe/common/SignatureDecoder.sol";
@@ -28,14 +28,14 @@ contract SafeTxDataBuilder is Script, SignatureDecoder {
     //     "SafeTx(address to,uint256 value,bytes data,uint8 operation,uint256 safeTxGas,uint256 baseGas,uint256 gasPrice,address gasToken,address refundReceiver,uint256 nonce)"
     // );
     bytes32 private constant SAFE_TX_TYPEHASH = 0xbb8310d486368db6bd6f849402fdd73ad53d316b5a4b2644ad6efe0f941286d8;
-    bytes NEWLINE_CHAR = bytes("\n");
+    bytes private constant NEWLINE_CHAR = bytes("\n");
 
-    string ROOT = vm.projectRoot();
-    string SIGNATURES_DIR = string.concat(ROOT, "/signatures/");
+    string internal ROOT = vm.projectRoot();
+    string internal SIGNATURES_DIR = string.concat(ROOT, "/signatures/");
 
-    string TX_FILE = string.concat(SIGNATURES_DIR, "tx.json");
-    string HASH_DATA_FILE = string.concat(SIGNATURES_DIR, "hashData.txt");
-    string SIGNATURES_FILE = string.concat(SIGNATURES_DIR, "signatures.txt");
+    string internal TX_FILE = string.concat(SIGNATURES_DIR, "tx.json");
+    string internal HASH_DATA_FILE = string.concat(SIGNATURES_DIR, "hashData.txt");
+    string internal SIGNATURES_FILE = string.concat(SIGNATURES_DIR, "signatures.txt");
 
     GnosisSafe immutable SAFE;
 

@@ -13,11 +13,11 @@ You can customize the RPC url used in [`foundry.tml`](./foundry.toml) under the 
 1. Put the transaction's raw data in `signatures/tx.json`
 2. Hash the transaction's raw data: `make hash`
 3. To sign the data with a Ledger, run: `make sign:ledger`
-4. Share the content of `signatures.txt` with the signer who will execute the transaction on the Safe.
+4. Share the content of `signatures.txt` with the signer who will execute the transaction on the Safe
 
 ### Batch signatures and execute transaction
 
-1. Make at least `threshold` signatures are available in `/signatures/signatures.txt`, each one per line
+1. Make sure at least `threshold` signatures are available in `/signatures/signatures.txt`, each one per line
 2. To execute the transaction on the Safe with a Ledger, run: `make exec:ledger`
 
 ## Advanced options
@@ -37,12 +37,12 @@ With `make sign` & `make exec`, one can also use any other wallet provider avail
 {
     "to": "0x0000000000000000000000000000000000000000",
     "value": 0,
-    "data": "0x", // the raw tx data
+    "data": "0x", // The raw tx data
     "operation": 0, // 0 for a call, 1 for a delegatecall
     "safeTxGas": 0,
     "baseGas": 0,
     "gasPrice": 0,
-    "gasToken": "0x0000000000000000000000000000000000000000", // indicates the tx will consume the chain's default gas token (ETH on mainnet)
-    "refundReceiver": "0x0000000000000000000000000000000000000000" // indicates the tx's refund receiver will be the address executing the tx
+    "gasToken": "0x0000000000000000000000000000000000000000", // Indicates the tx will consume the chain's default gas token (ETH on mainnet)
+    "refundReceiver": "0x0000000000000000000000000000000000000000" // Indicates the tx's refund receiver will be the address executing the tx
 }
 ```

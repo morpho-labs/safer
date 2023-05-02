@@ -3,9 +3,13 @@ pragma solidity ^0.8.0;
 
 import {QuickSort} from "./libraries/QuickSort.sol";
 import {SafeTxDataBuilder, Enum} from "./SafeTxDataBuilder.sol";
+import {console2} from "forge-std/console2.sol";
 
 contract ExecTransaction is SafeTxDataBuilder {
     using QuickSort for address[];
+
+    // Each signature saved in data/signatures.txt is (2 bytes 0x prefix + 130 bytes data =) 132 bytes long and suffixed by 1 byte of newline character.
+    uint256 internal constant SIGNATURE_LINE_LENGTH = 2 + SIGNATURE_LENGTH + 1;
 
     mapping(address => bytes) signatureOf;
 
@@ -46,27 +50,22 @@ contract ExecTransaction is SafeTxDataBuilder {
         );
     }
 
-    function loadSignatures() internal returns (bytes[] memory signatures) {
-        string[] memory cmd = new string[](2);
-        cmd[0] = "cat";
-        cmd[1] = SIGNATURES_FILE;
-
-        bytes memory res = vm.ffi(cmd); // TODO: use vm.readFile
+    function loadSignatures() internal view returns (bytes[] memory signatures) {
+        bytes memory res = bytes(vm.readFile(SIGNATURES_FILE));
 
         // If the file only contains a single signature, ffi converts it to bytes and can be used as is.
-        if (res.length == 32) {
+        if (res.length == 65) {
             signatures = new bytes[](1);
             signatures[0] = res;
         } else {
-            // Otherwise, each signature is (2 bytes 0x prefix + 64 bytes data =) 66 bytes long and suffixed by 1 byte of newline character.
-            uint256 nbSignatures = (res.length + 1) / 67; // The last 1 byte newline character is trimmed by ffi.
+            uint256 nbSignatures = res.length / SIGNATURE_LINE_LENGTH;
             signatures = new bytes[](nbSignatures);
 
             for (uint256 i; i < nbSignatures; ++i) {
-                uint256 start = i * 67 + 2; // Don't read the first 2 bytes of 0x prefix.
+                uint256 start = 2 + i * SIGNATURE_LINE_LENGTH; // Don't read the first 2 bytes (0x prefix).
 
-                bytes memory signature = new bytes(64);
-                for (uint256 j; j < 64; ++j) {
+                bytes memory signature = new bytes(SIGNATURE_LENGTH);
+                for (uint256 j; j < SIGNATURE_LENGTH; ++j) {
                     signature[j] = res[start + j];
                 }
 

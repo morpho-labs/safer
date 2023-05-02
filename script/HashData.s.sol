@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import {SafeTxDataBuilder, console2} from "./SafeTxDataBuilder.sol";
+import {SafeTxDataBuilder} from "./SafeTxDataBuilder.sol";
 
 contract HashData is SafeTxDataBuilder {
     constructor() SafeTxDataBuilder(payable(vm.envAddress("SAFE"))) {}

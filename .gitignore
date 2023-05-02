@@ -15,3 +15,6 @@ docs/
 
 # IDE
 .vscode
+
+# data
+data/

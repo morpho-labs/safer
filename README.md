@@ -10,14 +10,14 @@ You can customize the RPC url used in [`foundry.tml`](./foundry.toml) under the 
 
 ### Sign a Safe tx
 
-1. Put the transaction's raw data in `signatures/tx.json`
+1. Put the transaction's raw data in `data/tx.json`
 2. Hash the transaction's raw data: `make hash`
 3. To sign the data with a Ledger, run: `make sign:ledger`
-4. Share the content of `signatures.txt` with the signer who will execute the transaction on the Safe
+4. Share the content of `data/signatures.txt` with the signer who will execute the transaction on the Safe
 
 ### Batch signatures and execute transaction
 
-1. Make sure at least `threshold` signatures are available in `/signatures/signatures.txt`, each one per line
+1. Make sure at least `threshold` signatures are available in `data/signatures.txt`, each one per line
 2. To execute the transaction on the Safe with a Ledger, run: `make exec:ledger`
 
 ## Advanced options

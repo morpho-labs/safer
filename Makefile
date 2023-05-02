@@ -5,22 +5,23 @@ MAKEFLAGS += --no-print-directory
 NETWORK ?= ethereum-mainnet
 
 
-install:
+install: clean
 	foundryup
 	forge install
 
 hash:
-	forge script script/HashData.s.sol --rpc-url rpc
+	forge script script/HashData.s.sol
 
 sign\:%:
-	cast wallet sign --$* $$(cat signatures/hashData.txt)
+	cast wallet sign --$* $$(cat data/hashData.txt) >> data/signatures.txt
 
 exec\:%:
-	forge script script/ExecTransaction.s.sol --$* --broadcast --rpc-url rpc >> signatures/signatures.txt
+	forge script script/ExecTransaction.s.sol --$* --broadcast
 
 clean:
-	> signatures/hashData.txt
-	> signatures/signatures.txt
+	cp data/template.json data/tx.json
+	> data/hashData.txt
+	> data/signatures.txt
 
 
 .PHONY: contracts test coverage

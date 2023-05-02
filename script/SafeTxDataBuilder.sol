@@ -31,7 +31,7 @@ contract SafeTxDataBuilder is Script, SignatureDecoder {
     bytes private constant NEWLINE_CHAR = bytes("\n");
 
     string internal ROOT = vm.projectRoot();
-    string internal SIGNATURES_DIR = string.concat(ROOT, "/signatures/");
+    string internal SIGNATURES_DIR = string.concat(ROOT, "/data/");
 
     string internal TX_FILE = string.concat(SIGNATURES_DIR, "tx.json");
     string internal HASH_DATA_FILE = string.concat(SIGNATURES_DIR, "hashData.txt");

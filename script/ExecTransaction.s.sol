@@ -3,13 +3,9 @@ pragma solidity ^0.8.0;
 
 import {QuickSort} from "./libraries/QuickSort.sol";
 import {SafeTxDataBuilder, Enum} from "./SafeTxDataBuilder.sol";
-import {console2} from "forge-std/console2.sol";
 
 contract ExecTransaction is SafeTxDataBuilder {
     using QuickSort for address[];
-
-    // Each signature saved in data/signatures.txt is (2 bytes 0x prefix + 130 bytes data =) 132 bytes long and suffixed by 1 byte of newline character.
-    uint256 internal constant SIGNATURE_LINE_LENGTH = 2 + SIGNATURE_LENGTH + 1;
 
     mapping(address => bytes) signatureOf;
 
@@ -51,26 +47,19 @@ contract ExecTransaction is SafeTxDataBuilder {
     }
 
     function loadSignatures() internal view returns (bytes[] memory signatures) {
-        bytes memory res = bytes(vm.readFile(SIGNATURES_FILE));
+        signatures = new bytes[](THRESHOLD);
 
-        // If the file only contains a single signature, ffi converts it to bytes and can be used as is.
-        if (res.length == 65) {
-            signatures = new bytes[](1);
-            signatures[0] = res;
-        } else {
-            uint256 nbSignatures = res.length / SIGNATURE_LINE_LENGTH;
-            signatures = new bytes[](nbSignatures);
+        string memory line;
+        for (uint256 i; i < THRESHOLD; ++i) {
+            line = vm.readLine(SIGNATURES_FILE);
+            require(
+                bytes(line).length > 0,
+                string.concat(
+                    "Not enough signatures (found: ", vm.toString(i), "; expected: ", vm.toString(THRESHOLD), ")"
+                )
+            );
 
-            for (uint256 i; i < nbSignatures; ++i) {
-                uint256 start = 2 + i * SIGNATURE_LINE_LENGTH; // Don't read the first 2 bytes (0x prefix).
-
-                bytes memory signature = new bytes(SIGNATURE_LENGTH);
-                for (uint256 j; j < SIGNATURE_LENGTH; ++j) {
-                    signature[j] = res[start + j];
-                }
-
-                signatures[i] = vm.parseBytes(string(signature));
-            }
+            signatures[i] = vm.parseBytes(line);
         }
     }
 }

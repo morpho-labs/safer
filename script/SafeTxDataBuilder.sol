@@ -28,8 +28,10 @@ contract SafeTxDataBuilder is Script, SignatureDecoder {
     //     "SafeTx(address to,uint256 value,bytes data,uint8 operation,uint256 safeTxGas,uint256 baseGas,uint256 gasPrice,address gasToken,address refundReceiver,uint256 nonce)"
     // );
     bytes32 private constant SAFE_TX_TYPEHASH = 0xbb8310d486368db6bd6f849402fdd73ad53d316b5a4b2644ad6efe0f941286d8;
-    bytes internal constant NEWLINE_CHAR = bytes("\n");
-    uint256 internal constant SIGNATURE_LENGTH = 130;
+
+    uint256 internal immutable NONCE;
+    uint256 internal immutable THRESHOLD;
+    bytes32 internal immutable DOMAIN_SEPARATOR;
 
     string internal ROOT = vm.projectRoot();
     string internal SIGNATURES_DIR = string.concat(ROOT, "/data/");
@@ -42,6 +44,10 @@ contract SafeTxDataBuilder is Script, SignatureDecoder {
 
     constructor(address payable safe) {
         SAFE = GnosisSafe(safe);
+
+        NONCE = SAFE.nonce();
+        THRESHOLD = SAFE.getThreshold();
+        DOMAIN_SEPARATOR = SAFE.domainSeparator();
     }
 
     function loadSafeTxData() internal returns (SafeTxData memory txData) {
@@ -71,11 +77,11 @@ contract SafeTxDataBuilder is Script, SignatureDecoder {
                 txData.gasPrice,
                 txData.gasToken,
                 txData.refundReceiver,
-                SAFE.nonce()
+                NONCE
             )
         );
 
-        bytes memory txHashData = abi.encodePacked(bytes1(0x19), bytes1(0x01), SAFE.domainSeparator(), safeTxHash);
+        bytes memory txHashData = abi.encodePacked(bytes1(0x19), bytes1(0x01), DOMAIN_SEPARATOR, safeTxHash);
 
         return keccak256(txHashData);
     }

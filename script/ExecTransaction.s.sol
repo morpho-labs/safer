@@ -3,26 +3,21 @@ pragma solidity ^0.8.0;
 
 import {QuickSort} from "./libraries/QuickSort.sol";
 import {SafeTxDataBuilder, Enum} from "./SafeTxDataBuilder.sol";
+import {console2} from "forge-std/console2.sol";
 
 contract ExecTransaction is SafeTxDataBuilder {
     using QuickSort for address[];
 
+    address[] signers;
+    bytes[] signatures;
     mapping(address => bytes) signatureOf;
 
     constructor() SafeTxDataBuilder(payable(vm.envAddress("SAFE"))) {}
 
     function run() public {
         SafeTxData memory txData = loadSafeTxData();
-        bytes[] memory signatures = loadSignatures();
 
-        bytes32 dataHash = hashData(txData);
-        address[] memory signers = new address[](signatures.length);
-        for (uint256 i; i < signatures.length; i++) {
-            (address signer, bytes32 r, bytes32 s, uint8 v) = decode(dataHash, signatures[i]);
-
-            signers[i] = signer;
-            signatureOf[signer] = abi.encodePacked(r, s, v + 4);
-        }
+        loadSignatures(hashData(txData));
 
         signers.sort();
 
@@ -46,20 +41,51 @@ contract ExecTransaction is SafeTxDataBuilder {
         );
     }
 
-    function loadSignatures() internal view returns (bytes[] memory signatures) {
-        signatures = new bytes[](THRESHOLD);
+    function loadSignatures(bytes32 dataHash) internal {
+        bytes memory line = bytes(vm.readLine(SIGNATURES_FILE));
 
-        string memory signature;
-        for (uint256 i; i < THRESHOLD; ++i) {
-            signature = vm.readLine(SIGNATURES_FILE);
-            require(
-                bytes(signature).length > 0,
+        while (line.length > 0 && signatures.length < THRESHOLD) {
+            parseSignature(dataHash, line);
+
+            line = bytes(vm.readLine(SIGNATURES_FILE));
+        }
+
+        uint256 nbSignatures = signatures.length;
+        require(
+            nbSignatures >= THRESHOLD,
+            string.concat(
+                "Not enough signatures (found: ", vm.toString(nbSignatures), "; expected: ", vm.toString(THRESHOLD), ")"
+            )
+        );
+    }
+
+    function parseSignature(bytes32 dataHash, bytes memory line) internal {
+        if (line.length != 132) {
+            console2.log(
                 string.concat(
-                    "Not enough signatures (found: ", vm.toString(i), "; expected: ", vm.toString(THRESHOLD), ")"
+                    "Malformed signature: ", string(line), " (length: ", vm.toString(line.length), "; expected: 132)"
                 )
             );
 
-            signatures[i] = vm.parseBytes(signature);
+            return;
         }
+
+        bytes memory hexSignature = new bytes(130);
+        for (uint256 j; j < 130; ++j) {
+            hexSignature[j] = line[j + 2];
+        }
+
+        bytes memory signature = vm.parseBytes(string(hexSignature));
+
+        (address signer, bytes32 r, bytes32 s, uint8 v) = decode(dataHash, signature);
+        if (signatureOf[signer].length != 0) {
+            console2.log(string.concat("Duplicate signature: ", string(line)));
+
+            return;
+        }
+
+        signatureOf[signer] = abi.encodePacked(r, s, v + 4);
+        signatures.push(signature);
+        signers.push(signer);
     }
 }

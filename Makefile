@@ -15,6 +15,9 @@ hash:
 sign\:%:
 	cast wallet sign --$* $$(cat data/hashData.txt) >> data/signatures.txt
 
+simulate\:%:
+	forge script script/ExecTransaction.s.sol --$*
+
 exec\:%:
 	forge script script/ExecTransaction.s.sol --$* --broadcast
 

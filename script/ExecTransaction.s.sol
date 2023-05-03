@@ -49,17 +49,17 @@ contract ExecTransaction is SafeTxDataBuilder {
     function loadSignatures() internal view returns (bytes[] memory signatures) {
         signatures = new bytes[](THRESHOLD);
 
-        string memory line;
+        string memory signature;
         for (uint256 i; i < THRESHOLD; ++i) {
-            line = vm.readLine(SIGNATURES_FILE);
+            signature = vm.readLine(SIGNATURES_FILE);
             require(
-                bytes(line).length > 0,
+                bytes(signature).length > 0,
                 string.concat(
                     "Not enough signatures (found: ", vm.toString(i), "; expected: ", vm.toString(THRESHOLD), ")"
                 )
             );
 
-            signatures[i] = vm.parseBytes(line);
+            signatures[i] = vm.parseBytes(signature);
         }
     }
 }

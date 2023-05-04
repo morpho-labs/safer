@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-function quickSortAddress(address[] memory arr, int256 left, int256 right) pure {
+function quickSortAddress(address[] storage arr, int256 left, int256 right) {
     int256 i = left;
     int256 j = right;
     if (i == j) return;
@@ -23,7 +23,7 @@ function quickSortAddress(address[] memory arr, int256 left, int256 right) pure 
 }
 
 library QuickSort {
-    function sort(address[] memory data) internal pure {
+    function sort(address[] storage data) internal {
         quickSortAddress(data, int256(0), int256(data.length - 1));
     }
 }

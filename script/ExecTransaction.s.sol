@@ -3,26 +3,21 @@ pragma solidity ^0.8.0;
 
 import {QuickSort} from "./libraries/QuickSort.sol";
 import {SafeTxDataBuilder, Enum} from "./SafeTxDataBuilder.sol";
+import {console2} from "forge-std/console2.sol";
 
 contract ExecTransaction is SafeTxDataBuilder {
     using QuickSort for address[];
 
+    address[] signers;
+    bytes[] signatures;
     mapping(address => bytes) signatureOf;
 
     constructor() SafeTxDataBuilder(payable(vm.envAddress("SAFE"))) {}
 
     function run() public {
         SafeTxData memory txData = loadSafeTxData();
-        bytes[] memory signatures = loadSignatures();
 
-        bytes32 dataHash = hashData(txData);
-        address[] memory signers = new address[](signatures.length);
-        for (uint256 i; i < signatures.length; i++) {
-            (address signer, bytes32 r, bytes32 s, uint8 v) = decode(dataHash, signatures[i]);
-
-            signers[i] = signer;
-            signatureOf[signer] = abi.encodePacked(r, s, v + 4);
-        }
+        loadSignatures(hashData(txData));
 
         signers.sort();
 
@@ -46,32 +41,51 @@ contract ExecTransaction is SafeTxDataBuilder {
         );
     }
 
-    function loadSignatures() internal returns (bytes[] memory signatures) {
-        string[] memory cmd = new string[](2);
-        cmd[0] = "cat";
-        cmd[1] = SIGNATURES_FILE;
+    function loadSignatures(bytes32 dataHash) internal {
+        bytes memory line = bytes(vm.readLine(SIGNATURES_FILE));
 
-        bytes memory res = vm.ffi(cmd); // TODO: use vm.readFile
+        while (line.length > 0 && signatures.length < THRESHOLD) {
+            parseSignature(dataHash, line);
 
-        // If the file only contains a single signature, ffi converts it to bytes and can be used as is.
-        if (res.length == 32) {
-            signatures = new bytes[](1);
-            signatures[0] = res;
-        } else {
-            // Otherwise, each signature is (2 bytes 0x prefix + 64 bytes data =) 66 bytes long and suffixed by 1 byte of newline character.
-            uint256 nbSignatures = (res.length + 1) / 67; // The last 1 byte newline character is trimmed by ffi.
-            signatures = new bytes[](nbSignatures);
-
-            for (uint256 i; i < nbSignatures; ++i) {
-                uint256 start = i * 67 + 2; // Don't read the first 2 bytes of 0x prefix.
-
-                bytes memory signature = new bytes(64);
-                for (uint256 j; j < 64; ++j) {
-                    signature[j] = res[start + j];
-                }
-
-                signatures[i] = vm.parseBytes(string(signature));
-            }
+            line = bytes(vm.readLine(SIGNATURES_FILE));
         }
+
+        uint256 nbSignatures = signatures.length;
+        require(
+            nbSignatures >= THRESHOLD,
+            string.concat(
+                "Not enough signatures (found: ", vm.toString(nbSignatures), "; expected: ", vm.toString(THRESHOLD), ")"
+            )
+        );
+    }
+
+    function parseSignature(bytes32 dataHash, bytes memory line) internal {
+        if (line.length != 132) {
+            console2.log(
+                string.concat(
+                    "Malformed signature: ", string(line), " (length: ", vm.toString(line.length), "; expected: 132)"
+                )
+            );
+
+            return;
+        }
+
+        bytes memory hexSignature = new bytes(130);
+        for (uint256 j; j < 130; ++j) {
+            hexSignature[j] = line[j + 2];
+        }
+
+        bytes memory signature = vm.parseBytes(string(hexSignature));
+
+        (address signer, bytes32 r, bytes32 s, uint8 v) = decode(dataHash, signature);
+        if (signatureOf[signer].length != 0) {
+            console2.log(string.concat("Duplicate signature: ", string(line)));
+
+            return;
+        }
+
+        signatureOf[signer] = abi.encodePacked(r, s, v + 4);
+        signatures.push(signature);
+        signers.push(signer);
     }
 }

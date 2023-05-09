@@ -45,7 +45,7 @@ contract SafeTxDataBuilder is Script, SignatureDecoder {
     constructor(address payable safe) {
         SAFE = GnosisSafe(safe);
 
-        NONCE = SAFE.nonce();
+        NONCE = vm.envOr("SAFE_NONCE", SAFE.nonce());
         THRESHOLD = SAFE.getThreshold();
         DOMAIN_SEPARATOR = SAFE.domainSeparator();
     }
@@ -62,28 +62,6 @@ contract SafeTxDataBuilder is Script, SignatureDecoder {
         txData.gasPrice = json.readUint("$.gasPrice");
         txData.gasToken = json.readAddress("$.gasToken");
         txData.refundReceiver = payable(json.readAddress("$.refundReceiver"));
-    }
-
-    function hashData(SafeTxData memory txData) internal view returns (bytes32) {
-        bytes32 safeTxHash = keccak256(
-            abi.encode(
-                SAFE_TX_TYPEHASH,
-                txData.to,
-                txData.value,
-                keccak256(txData.data),
-                txData.operation,
-                txData.safeTxGas,
-                txData.baseGas,
-                txData.gasPrice,
-                txData.gasToken,
-                txData.refundReceiver,
-                NONCE
-            )
-        );
-
-        bytes memory txHashData = abi.encodePacked(bytes1(0x19), bytes1(0x01), DOMAIN_SEPARATOR, safeTxHash);
-
-        return keccak256(txHashData);
     }
 
     function decode(bytes32 dataHash, bytes memory signature)

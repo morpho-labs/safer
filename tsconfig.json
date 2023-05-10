@@ -1,0 +1,15 @@
+{
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
+  "compilerOptions": {
+    "target": "esnext",
+    "strict": true,
+    "module": "ES6",
+    "moduleResolution": "nodenext",
+    "resolveJsonModule": true,
+    "skipLibCheck": true
+  },
+  "files": ["builder.ts"]
+}

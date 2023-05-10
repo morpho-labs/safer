@@ -19,3 +19,6 @@ docs/
 # data
 data/
 broadcast/
+
+dist
+node_modules

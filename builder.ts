@@ -1,5 +1,14 @@
 import { input, select } from "@inquirer/prompts";
-import { Contract, FunctionFragment, getDefaultProvider, isAddress, isHexString, parseUnits, toBigInt } from "ethers";
+import {
+  Contract,
+  FunctionFragment,
+  getDefaultProvider,
+  isAddress,
+  isHexString,
+  parseUnits,
+  toBigInt,
+  ZeroAddress,
+} from "ethers";
 import { TransactionType, encodeMulti, MetaTransaction, OperationType, encodeSingle } from "ethers-multisend";
 import { spawnSync } from "child_process";
 import { writeFileSync } from "fs";
@@ -23,13 +32,13 @@ const trial =
     }
   };
 
-const address = (config: { message: string; default?: string }) =>
+const inputAddress = (config: { message: string; default?: string }) =>
   input({
     ...config,
     validate: trial((value) => isAddress(value), "Invalid address"),
   });
 
-const number = (config: { message: string; min: number; default?: string }) =>
+const inputNumber = (config: { message: string; min: number; default?: string }) =>
   input({
     ...config,
     validate: trial((value) => {
@@ -51,13 +60,13 @@ const number = (config: { message: string; min: number; default?: string }) =>
   console.log(`\n          --- Safe Transaction Options ---\n`);
 
   const nbTxs = parseInt(
-    await number({
+    await inputNumber({
       message: "How many transactions do you want to batch?",
       default: "1",
       min: 1,
     })
   );
-  const gasToken = await address({
+  const gasToken = await inputAddress({
     message: `With which ERC20 token do you want to pay gas? (default: ETH)`,
     default: "0x0000000000000000000000000000000000000000",
   });
@@ -84,7 +93,7 @@ const number = (config: { message: string; min: number; default?: string }) =>
 
     switch (txType) {
       case TransactionType.callContract:
-        to = await address({ message: prefix + `Contract address` });
+        to = await inputAddress({ message: prefix + `Contract address` });
 
         const functionSelector = await input({
           message: prefix + `Function selector`,
@@ -115,7 +124,7 @@ const number = (config: { message: string; min: number; default?: string }) =>
         if (!isHexString(data))
           throw Error(`An error happened when encoding calldata:\n${data}\n${subprocess.stderr.toString().trim()}`);
 
-        value = await number({
+        value = await inputNumber({
           message: prefix + `Value (ETH)`,
           default: "0",
           min: 0,
@@ -151,7 +160,7 @@ const number = (config: { message: string; min: number; default?: string }) =>
           }, "Invalid ERC20 address"),
         });
 
-        to = await address({ message: prefix + `Recipient address` });
+        to = await inputAddress({ message: prefix + `Recipient address` });
         const amount = parseUnits(
           await input({
             message: prefix + `Amount`,
@@ -165,12 +174,12 @@ const number = (config: { message: string; min: number; default?: string }) =>
         break;
 
       case TransactionType.transferCollectible:
-        const collectible = await address({
+        const collectible = await inputAddress({
           message: prefix + `Collectible address`,
         });
 
-        const from = await address({ message: prefix + `From address`, default: process.env.SAFE });
-        to = await address({ message: prefix + `Recipient address` });
+        const from = await inputAddress({ message: prefix + `From address`, default: process.env.SAFE });
+        to = await inputAddress({ message: prefix + `Recipient address` });
 
         const tokenId = await input({
           message: prefix + `Token ID`,
@@ -182,13 +191,13 @@ const number = (config: { message: string; min: number; default?: string }) =>
         break;
 
       case TransactionType.raw:
-        to = await address({ message: prefix + `Target address` });
+        to = await inputAddress({ message: prefix + `Target address` });
         data = await input({
           message: prefix + `Calldata`,
           validate: trial((value) => isHexString(value), "Invalid calldata"),
         });
 
-        value = await number({
+        value = await inputNumber({
           message: prefix + `Value (ETH)`,
           default: "0",
           min: 0,
@@ -210,11 +219,12 @@ const number = (config: { message: string; min: number; default?: string }) =>
     JSON.stringify(
       {
         ...tx,
+        value: toBigInt(tx.value).toString(),
         safeTxGas: 0,
         baseGas: 0,
         gasPrice: 0,
         gasToken,
-        refundReceiver: "0x0000000000000000000000000000000000000000",
+        refundReceiver: ZeroAddress,
       },
       undefined,
       4

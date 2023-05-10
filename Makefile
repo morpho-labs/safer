@@ -23,7 +23,6 @@ exec\:%:
 	forge script script/ExecTransaction.s.sol --$* --broadcast
 
 clean:
-	cp data/template.json data/tx.json
 	> data/hashData.txt
 	> data/signatures.txt
 

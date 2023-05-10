@@ -17,20 +17,7 @@ contract ExecTransaction is SafeTxDataBuilder {
     function run() public {
         SafeTxData memory txData = loadSafeTxData();
 
-        loadSignatures(
-            SAFE.getTransactionHash(
-                txData.to,
-                txData.value,
-                txData.data,
-                txData.operation,
-                txData.safeTxGas,
-                txData.baseGas,
-                txData.gasPrice,
-                txData.gasToken,
-                txData.refundReceiver,
-                NONCE
-            )
-        );
+        loadSignatures(hashData(txData));
 
         signers.sort();
 

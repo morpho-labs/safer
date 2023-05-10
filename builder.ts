@@ -69,11 +69,11 @@ const number = (config: { message: string; min: number; default?: string }) =>
     const prefix = `  `;
 
     const txType = (await select({
-      message: prefix + `Transaction type:`,
+      message: prefix + `Type of transaction:`,
       choices: [
-        { name: "Call contract", value: TransactionType.callContract },
-        { name: "Transfer funds (ERC20)", value: TransactionType.transferFunds },
-        { name: "Transfer collectible (ERC721/ERC1155)", value: TransactionType.transferCollectible },
+        { name: "Contract call", value: TransactionType.callContract },
+        { name: "ERC20 transfer", value: TransactionType.transferFunds },
+        { name: "ERC721/ERC1155 transfer", value: TransactionType.transferCollectible },
         { name: "Raw transaction", value: TransactionType.raw },
       ],
     })) as TransactionType;

@@ -15,6 +15,7 @@ docs/
 
 # IDE
 .vscode
+.nvmrc
 
 # data
 data/

@@ -64,6 +64,21 @@ contract SafeTxDataBuilder is Script, SignatureDecoder {
         txData.refundReceiver = payable(json.readAddress("$.refundReceiver"));
     }
 
+    function hashData(SafeTxData memory txData) internal view returns (bytes32) {
+        return SAFE.getTransactionHash(
+            txData.to,
+            txData.value,
+            txData.data,
+            txData.operation,
+            txData.safeTxGas,
+            txData.baseGas,
+            txData.gasPrice,
+            txData.gasToken,
+            txData.refundReceiver,
+            NONCE
+        );
+    }
+
     function decode(bytes32 dataHash, bytes memory signature)
         internal
         pure

@@ -9,18 +9,7 @@ contract HashData is SafeTxDataBuilder {
     function run() public {
         SafeTxData memory txData = loadSafeTxData();
 
-        bytes32 dataHash = SAFE.getTransactionHash(
-            txData.to,
-            txData.value,
-            txData.data,
-            txData.operation,
-            txData.safeTxGas,
-            txData.baseGas,
-            txData.gasPrice,
-            txData.gasToken,
-            txData.refundReceiver,
-            NONCE
-        );
+        bytes32 dataHash = hashData(txData);
 
         vm.writeFile(HASH_DATA_FILE, vm.toString(dataHash));
     }

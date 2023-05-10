@@ -6,6 +6,7 @@ NETWORK ?= ethereum-mainnet
 
 
 install: clean
+	yarn
 	foundryup
 	forge install
 

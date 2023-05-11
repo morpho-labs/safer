@@ -5,6 +5,7 @@
 - Install [Foundry](https://github.com/foundry-rs/foundry).
 - Run `make` to initialize the repository.
 - Create a `.env` file from the template [`.env.example`](./.env.example) file.
+  - Use the environment variable `SAFE_NONCE` to override a transaction's nonce. Leave it blank to use the default, latest Safe nonce.
 
 You can customize the RPC url used in [`foundry.tml`](./foundry.toml) under the `rpc_endpoint` section. This is useful if your Safe is not deployed on mainnet (which is the default chain used).
 

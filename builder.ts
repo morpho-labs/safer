@@ -218,13 +218,14 @@ const inputNumber = (config: { message: string; min: number; default?: string })
     path.join("data", "tx.json"),
     JSON.stringify(
       {
-        ...tx,
-        value: toBigInt(tx.value).toString(),
+        operation: 0,
         safeTxGas: 0,
         baseGas: 0,
         gasPrice: 0,
         gasToken,
         refundReceiver: ZeroAddress,
+        ...tx,
+        value: toBigInt(tx.value).toString(), // TODO: must be interpreted as uint256 by forge
       },
       undefined,
       4

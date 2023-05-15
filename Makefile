@@ -14,7 +14,7 @@ hash:
 	forge script script/HashData.s.sol
 
 sign\:%: hash
-	cast wallet sign --$* $$(cat data/hashData.txt) >> data/signatures.txt
+	OUTPUT=$$(cast wallet sign --$* $$(cat data/hashData.txt)) && if [[ "$$OUTPUT" =~ "^0x" ]]; then $$OUTPUT >> data/signatures.txt; fi
 
 simulate\:%:
 	forge script script/ExecTransaction.s.sol --$*
@@ -23,6 +23,7 @@ exec\:%:
 	forge script script/ExecTransaction.s.sol --$* --broadcast
 
 clean:
+	mkdir -p data
 	> data/hashData.txt
 	> data/signatures.txt
 

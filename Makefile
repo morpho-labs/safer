@@ -13,7 +13,7 @@ install: clean
 hash:
 	forge script script/HashData.s.sol
 
-sign\:%:
+sign\:%: hash
 	cast wallet sign --$* $$(cat data/hashData.txt) >> data/signatures.txt
 
 simulate\:%:

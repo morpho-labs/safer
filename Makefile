@@ -6,9 +6,11 @@ NETWORK ?= ethereum-mainnet
 
 
 install: clean
-	yarn install --frozen-lockfile
 	foundryup
 	forge install
+
+tx:
+	npx create-safe-tx
 
 hash:
 	forge script script/HashData.s.sol
@@ -23,6 +25,7 @@ exec\:%:
 	forge script script/ExecTransaction.s.sol --$* --broadcast
 
 clean:
+	cp data/template.json data/tx.json
 	> data/hashData.txt
 	> data/signatures.txt
 

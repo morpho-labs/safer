@@ -15,11 +15,7 @@ docs/
 
 # IDE
 .vscode
-.nvmrc
 
 # data
 data/
 broadcast/
-
-dist
-node_modules

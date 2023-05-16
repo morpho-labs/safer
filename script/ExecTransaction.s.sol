@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 
 import {QuickSort} from "./libraries/QuickSort.sol";
 import {SafeTxDataBuilder, Enum} from "./SafeTxDataBuilder.sol";
-import {console2} from "forge-std/console2.sol";
 
 contract ExecTransaction is SafeTxDataBuilder {
     using QuickSort for address[];
@@ -58,15 +57,12 @@ contract ExecTransaction is SafeTxDataBuilder {
     }
 
     function parseSignature(bytes32 dataHash, bytes memory line) internal {
-        if (line.length != 132) {
-            console2.log(
-                string.concat(
-                    "Malformed signature: ", string(line), " (length: ", vm.toString(line.length), "; expected: 132)"
-                )
-            );
-
-            return;
-        }
+        require(
+            line.length == 132,
+            string.concat(
+                "Malformed signature: ", string(line), " (length: ", vm.toString(line.length), "; expected: 132)"
+            )
+        );
 
         bytes memory hexSignature = new bytes(130);
         for (uint256 j; j < 130; ++j) {
@@ -76,11 +72,7 @@ contract ExecTransaction is SafeTxDataBuilder {
         bytes memory signature = vm.parseBytes(string(hexSignature));
 
         (address signer, bytes32 r, bytes32 s, uint8 v) = decode(dataHash, signature);
-        if (signatureOf[signer].length != 0) {
-            console2.log(string.concat("Duplicate signature: ", string(line)));
-
-            return;
-        }
+        require(signatureOf[signer].length == 0, string.concat("Duplicate signature: ", string(line)));
 
         signatureOf[signer] = abi.encodePacked(r, s, v + 4);
         signatures.push(signature);

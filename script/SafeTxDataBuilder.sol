@@ -55,7 +55,7 @@ contract SafeTxDataBuilder is Script, SignatureDecoder {
         string memory json = vm.readFile(TX_FILE);
 
         txData.to = json.readAddress("$.to");
-        txData.value = json.readUint("$.value"); // TODO: this is actually a string. Check if it works properly
+        txData.value = json.readUint("$.value");
         txData.data = json.readBytes("$.data");
         txData.operation = Enum.Operation(json.readUint("$.operation"));
         txData.safeTxGas = json.readUint("$.safeTxGas");

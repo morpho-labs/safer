@@ -10,7 +10,7 @@
 
 ### Build a Safe tx
 
-- Run `make tx` and follow the steps; OR
+- Run `make tx` and follow the steps to create a Safe transaction using [create-safe-tx](https://github.com/morpho-labs/create-safe-tx); OR
 - Put the transaction's raw data in `data/tx.json`
 
 ### Sign a Safe tx

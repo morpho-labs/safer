@@ -10,7 +10,7 @@
 
 ### Build a Safe tx
 
-- Run `yarn builder` and follow the steps; OR
+- Run `make tx` and follow the steps; OR
 - Put the transaction's raw data in `data/tx.json`
 
 ### Sign a Safe tx
@@ -41,8 +41,8 @@ With `make sign` & `make exec`, one can also use any other wallet provider avail
 ```json
 {
   "to": "0x0000000000000000000000000000000000000000",
-  "value": 0,
-  "data": "0x", // The raw tx data
+  "value": "0", // The tx value (in ETH), must be a string
+  "data": "0x", // The raw tx data, must start with 0x
   "operation": 0, // 0 for a call, 1 for a delegatecall
   "safeTxGas": 0,
   "baseGas": 0,

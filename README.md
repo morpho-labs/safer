@@ -5,7 +5,7 @@
 - Install [Foundry](https://github.com/foundry-rs/foundry).
 - Run `make` to initialize the repository.
 - Create a `.env` file from the template [`.env.example`](./.env.example) file.
-  - Use the environment variable `SAFE_NONCE` to override a transaction's nonce. Leave it blank to use the default, latest Safe nonce.
+  - Use the environment variable `SAFE_NONCE` to override a transaction's nonce. Remove it to use the default, latest Safe nonce. Leave it blank to use nonce 0.
   - Use the environment variable `FOUNDRY_ETH_RPC_URL` to customize the RPC endpoint used. This is useful to interact with a Safe deployed on another chain than Ethereum mainnet (the default one).
 
 ### Build a Safe tx

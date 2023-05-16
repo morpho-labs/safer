@@ -9,6 +9,9 @@ install: clean
 	foundryup
 	forge install
 
+tx:
+	npx create-safe-tx
+
 hash:
 	forge script script/HashData.s.sol
 

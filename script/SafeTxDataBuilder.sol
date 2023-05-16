@@ -29,10 +29,6 @@ contract SafeTxDataBuilder is Script, SignatureDecoder {
     // );
     bytes32 private constant SAFE_TX_TYPEHASH = 0xbb8310d486368db6bd6f849402fdd73ad53d316b5a4b2644ad6efe0f941286d8;
 
-    uint256 internal immutable NONCE;
-    uint256 internal immutable THRESHOLD;
-    bytes32 internal immutable DOMAIN_SEPARATOR;
-
     string internal ROOT = vm.projectRoot();
     string internal SIGNATURES_DIR = string.concat(ROOT, "/data/");
 
@@ -40,10 +36,15 @@ contract SafeTxDataBuilder is Script, SignatureDecoder {
     string internal HASH_DATA_FILE = string.concat(SIGNATURES_DIR, "hashData.txt");
     string internal SIGNATURES_FILE = string.concat(SIGNATURES_DIR, "signatures.txt");
 
-    GnosisSafe immutable SAFE;
+    GnosisSafe SAFE;
+    address internal SENDER;
+    uint256 internal NONCE;
+    uint256 internal THRESHOLD;
+    bytes32 internal DOMAIN_SEPARATOR;
 
-    constructor(address payable safe) {
-        SAFE = GnosisSafe(safe);
+    function setUp() public {
+        SENDER = vm.envAddress("SENDER");
+        SAFE = GnosisSafe(payable(vm.envAddress("SAFE")));
 
         NONCE = vm.envOr("SAFE_NONCE", SAFE.nonce());
         THRESHOLD = SAFE.getThreshold();

@@ -12,8 +12,6 @@ contract ExecTransaction is SafeTxDataBuilder {
     bytes[] signatures;
     mapping(address => bytes) signatureOf;
 
-    constructor() SafeTxDataBuilder(payable(vm.envAddress("SAFE"))) {}
-
     function run() public {
         SafeTxData memory txData = loadSafeTxData();
 
@@ -26,7 +24,7 @@ contract ExecTransaction is SafeTxDataBuilder {
         }
 
         // Execute tx.
-        vm.broadcast(vm.envAddress("SENDER"));
+        vm.broadcast(SENDER);
         SAFE.execTransaction(
             txData.to,
             txData.value,

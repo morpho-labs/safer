@@ -14,7 +14,8 @@ hash:
 	forge script script/HashData.s.sol
 
 sign\:%: hash
-	OUTPUT=$$(cast wallet sign --$* $$(cat data/hashData.txt)) && if [[ "$$OUTPUT" =~ "^0x" ]]; then $$OUTPUT >> data/signatures.txt; fi
+	OUTPUT=$$(cast wallet sign --$* $$(cat data/hashData.txt)) && echo "$$OUTPUT" >> data/signatures.txt
+	@echo "\033[0;32mTx signature successfully appended to data/signatures.txt"
 
 simulate\:%:
 	forge script script/ExecTransaction.s.sol --$*

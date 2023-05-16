@@ -4,8 +4,6 @@ pragma solidity ^0.8.0;
 import {SafeTxDataBuilder} from "./SafeTxDataBuilder.sol";
 
 contract HashData is SafeTxDataBuilder {
-    constructor() SafeTxDataBuilder(payable(vm.envAddress("SAFE"))) {}
-
     function run() public {
         SafeTxData memory txData = loadSafeTxData();
 

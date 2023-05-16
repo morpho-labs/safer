@@ -6,7 +6,7 @@ NETWORK ?= ethereum-mainnet
 
 
 install: clean
-	yarn
+	yarn install --frozen-lockfile
 	foundryup
 	forge install
 

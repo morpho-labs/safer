@@ -6,9 +6,11 @@ NETWORK ?= ethereum-mainnet
 
 
 install: clean
-	yarn
 	foundryup
 	forge install
+
+tx:
+	npx create-safe-tx
 
 hash:
 	forge script script/HashData.s.sol
@@ -25,8 +27,9 @@ exec\:%:
 
 clean:
 	mkdir -p data
+	cp data/template.json data/tx.json
 	> data/hashData.txt
 	> data/signatures.txt
 
 
-.PHONY: contracts test coverage
+.PHONY: contracts test coverage hash sign simulate exec clean

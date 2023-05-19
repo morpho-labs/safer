@@ -15,9 +15,8 @@
 
 ### Sign a Safe tx
 
-1. Hash the transaction's raw data: `make hash`
-2. To sign the data with a Ledger, run: `make sign:ledger`
-3. Share the content of `data/signatures.txt` with the signer who will execute the transaction on the Safe
+1. To sign the data with a Ledger, run: `make sign:ledger`
+2. Share the content of `data/signatures.txt` with the signer who will execute the transaction on the Safe
 
 ### Batch signatures and execute transaction
 

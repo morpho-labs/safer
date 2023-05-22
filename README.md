@@ -5,6 +5,7 @@
 - Install [Foundry](https://github.com/foundry-rs/foundry).
 - Run `make` to initialize the repository.
 - Create a `.env` file from the template [`.env.example`](./.env.example) file.
+  - Set the environment variable `SENDER` to the address used to execute the transaction on the Safe. If you don't execute the tx, you don't need to set it.
   - Use the environment variable `SAFE_NONCE` to override a transaction's nonce. Remove it to use the default, latest Safe nonce. Leave it blank to use nonce 0.
   - Use the environment variable `FOUNDRY_ETH_RPC_URL` to customize the RPC endpoint used. This is useful to interact with a Safe deployed on another chain than Ethereum mainnet (the default one).
 
@@ -25,7 +26,7 @@
 
 ## Advanced options
 
-### Wallet support
+### Hardware Wallet support
 
 With `make sign` & `make exec`, one can also use any other wallet provider available with `cast`:
 
@@ -34,6 +35,9 @@ With `make sign` & `make exec`, one can also use any other wallet provider avail
 - `make cmd:trezor` to use a Trezor
 - `make cmd:keystore` to use a keystore
 - `make cmd:"private-key 0x..."` if you really want to save your private key to your shell's history...
+
+You can also append any `cast` parameter:
+- `make sign:"ledger --mnemonic 1 --mnemonic-index 1"` or `make exec:"ledger --mnemonics 1 --mnemonic-indexes 1"` to use another account than the default one at index `0`
 
 ### Transaction details
 

@@ -1,8 +1,8 @@
 # Safer
 
-Safer is a tool that helps you sign & submit transactions to a Gnosis Safe, without requiring any interaction with Gnosis' backend or frontend.
+Safer is a tool that helps you sign & submit transactions to a Safe, without requiring any interaction with Safe's backend or frontend.
 
-Safer is a set of Foundry scripts that can be used as fallback in case Gnosis is down and the blockchain is the only thing that can be trusted.
+Safer is a set of Foundry scripts that can be used as fallback in case Safe App is down and the blockchain is the only thing that can be trusted.
 
 Safer enables submitting complex transactions without the need of intermediaries.
 

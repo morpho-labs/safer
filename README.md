@@ -1,5 +1,13 @@
 # Safer
 
+Safer is a tool that helps you sign & submit transactions to a Safe, without requiring any interaction with Safe's backend or frontend.
+
+Safer is a set of Foundry scripts that can be used as fallback in case Safe App is down and the blockchain is the only thing that can be trusted.
+
+Safer enables submitting complex transactions without the need of intermediaries.
+
+**Safer unlocks true DAO resilience.**
+
 ## Getting Started
 
 - Install [Foundry](https://github.com/foundry-rs/foundry).

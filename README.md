@@ -45,7 +45,7 @@ With `make sign` & `make exec`, one can also use any other wallet provider avail
 - `make cmd:"private-key 0x..."` if you really want to save your private key to your shell's history...
 
 You can also append any `cast` parameter:
-- `make sign:"ledger --mnemonic 1 --mnemonic-index 1"` or `make exec:"ledger --mnemonics 1 --mnemonic-indexes 1"` to use another account than the default one at index `0`
+- `make sign:"ledger --mnemonic 1 --mnemonic-index 1"` or `make exec:"ledger --mnemonics foo --mnemonic-indexes 1"` to use another account than the default one at index `0`
 
 ### Transaction details
 

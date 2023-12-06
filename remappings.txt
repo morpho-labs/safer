@@ -1,3 +1,0 @@
-forge-std/=lib/forge-std/src/
-
-safe/=lib/safe-contracts/contracts/

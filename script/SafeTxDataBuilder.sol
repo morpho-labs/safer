@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {SignatureDecoder} from "safe/common/SignatureDecoder.sol";
-import {GnosisSafe, Enum} from "safe/GnosisSafe.sol";
+import {SignatureDecoder} from "../lib/safe-contracts/contracts/common/SignatureDecoder.sol";
+import {GnosisSafe, Enum} from "../lib/safe-contracts/contracts/GnosisSafe.sol";
 
-import "forge-std/console2.sol";
-import "forge-std/StdJson.sol";
-import "forge-std/Script.sol";
+import "../lib/forge-std/src/console2.sol";
+import "../lib/forge-std/src/StdJson.sol";
+import "../lib/forge-std/src/Script.sol";
 
 contract SafeTxDataBuilder is Script, SignatureDecoder {
     using stdJson for string;

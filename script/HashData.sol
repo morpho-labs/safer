@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {SafeTxDataBuilder} from "./SafeTxDataBuilder.sol";
+import {SafeTxDataBuilder, SafeTxData} from "./SafeTxDataBuilder.sol";
 
 contract HashData is SafeTxDataBuilder {
     function run() public {

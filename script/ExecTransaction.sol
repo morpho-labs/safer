@@ -2,7 +2,8 @@
 pragma solidity ^0.8.0;
 
 import {QuickSort} from "./libraries/QuickSort.sol";
-import {SafeTxDataBuilder, Enum} from "./SafeTxDataBuilder.sol";
+
+import {SafeTxDataBuilder, SafeTx, Enum} from "./SafeTxDataBuilder.sol";
 
 contract ExecTransaction is SafeTxDataBuilder {
     using QuickSort for address[];
@@ -12,29 +13,30 @@ contract ExecTransaction is SafeTxDataBuilder {
     mapping(address => bytes) signatureOf;
 
     function run() public {
-        SafeTxData memory txData = loadSafeTxData();
+        SafeTx memory safeTx;
+        safeTx.data = loadSafeTxData();
 
-        loadSignatures(hashData(txData));
+        loadSignatures(hashData(safeTx.data));
 
         signers.sort();
 
         for (uint256 i; i < signers.length; ++i) {
-            txData.signatures = bytes.concat(txData.signatures, signatureOf[signers[i]]);
+            safeTx.signatures = bytes.concat(safeTx.signatures, signatureOf[signers[i]]);
         }
 
         // Execute tx.
         vm.broadcast(SENDER);
         SAFE.execTransaction(
-            txData.to,
-            txData.value,
-            txData.data,
-            txData.operation,
-            txData.safeTxGas,
-            txData.baseGas,
-            txData.gasPrice,
-            txData.gasToken,
-            txData.refundReceiver,
-            txData.signatures
+            safeTx.data.to,
+            safeTx.data.value,
+            safeTx.data.data,
+            safeTx.data.operation,
+            safeTx.data.safeTxGas,
+            safeTx.data.baseGas,
+            safeTx.data.gasPrice,
+            safeTx.data.gasToken,
+            safeTx.data.refundReceiver,
+            safeTx.signatures
         );
     }
 

@@ -13,17 +13,17 @@ tx:
 	npx create-safe-tx
 
 hash:
-	forge script script/HashData.s.sol
+	forge script script/HashData.sol
 
 sign\:%: hash
 	cast wallet sign --$* $$(cat data/hashData.txt) 1>> data/signatures.txt
 	@echo "\033[0;32mTx signature successfully appended to data/signatures.txt"
 
 simulate\:%:
-	forge script script/ExecTransaction.s.sol --$*
+	forge script script/ExecTransaction.sol --$*
 
 exec\:%:
-	forge script script/ExecTransaction.s.sol --$* --broadcast
+	forge script script/ExecTransaction.sol --$* --broadcast
 
 clean:
 	mkdir -p data

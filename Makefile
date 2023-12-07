@@ -16,6 +16,7 @@ hash:
 	forge script script/HashData.sol
 
 sign\:%: hash
+	forge script script/CheckNoSignature.sol
 	cast wallet sign --$* $$(cat data/hashData.txt) 1>> data/signatures.txt
 	@echo "\033[0;32mTx signature successfully appended to data/signatures.txt"
 

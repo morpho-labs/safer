@@ -26,7 +26,7 @@ struct SafeTx {
     bytes signatures;
 }
 
-contract SafeTxDataBuilder is Script, SignatureDecoder {
+contract SafeTxScript is Script, SignatureDecoder {
     using stdJson for string;
 
     string internal ROOT = vm.projectRoot();
